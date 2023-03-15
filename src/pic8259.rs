@@ -9,7 +9,7 @@
 //! The 8259 PIC controls the interrupt mechanism of the CPU. It does this by feeding multiple interrupt requests, in order, to the
 //! processor. A hardware interrupt will send a pulse along its interrupt line to the 8259 PIC. The 8259 PIC will then
 //! translate the IRQ (Interrupt Request)/Hardware Interrupt into a system interrupt. It will then send a message to the CPU, interrupting
-//! whatever task it was doing. The OS kernel should handle these IRQs and perform the necessary procedure (like polling the keyboard for a scancode) 
+//! whatever task it was doing. The OS kernel should handle these IRQs and perform the necessary procedure (like polling the keyboard for a scancode)
 //! or alert a userspace program of an interrupt by sending a message to a driver.
 //!
 //! ## What would be different if the 8259 PIC didn't exist?
@@ -24,12 +24,12 @@
 //! After the processor accepts the interrupt, the master checks which of the PICs is reponsible for answering. It then eithr feeds the interrupt number to the processor or asks the slave to.
 //! The PIC that answers, whether it be the master or slave, looks for the "vector offet" and adds it to the input line to compute the interrupt number. The processor
 //! then acts on that interrupt address.
-//! 
+//!
 //! ## Where can I read more?
 //! The following links are useful to learning more about the 8259 PIC and interrupts:
 //! - [8259 PIC on OSDev Wiki](https://wiki.osdev.org/PIC) (the page followed to write this module and where most of the documentation above is from)
 //! - [8259 PIC on Wikipedia](https://en.wikipedia.org/wiki/Intel_8259)
 //! - [Interrupts](https://wiki.osdev.org/IRQ)
-//! 
+//!
 //! # The Public API
 //! The API of this module is based off of the already existing [pic8259](https://github.com/rust-osdev/pic8259) crate.
