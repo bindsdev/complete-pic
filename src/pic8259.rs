@@ -31,5 +31,50 @@
 //! - [8259 PIC on Wikipedia](https://en.wikipedia.org/wiki/Intel_8259)
 //! - [Interrupts](https://wiki.osdev.org/IRQ)
 //!
-//! # The Public API
-//! The API of this module is based off of the already existing [pic8259](https://github.com/rust-osdev/pic8259) crate.
+//! # Public API
+//!
+//! This module is based of the design of the already existing [pic8259](https://github.com/rust-osdev/pic8259) crate.
+
+use x86_64::instructions::port::Port;
+
+/// The command I/O port of the master PIC
+const MASTER_CMD: u8 = 0x20;
+
+/// The data I/O port of the master PIC
+const MASTER_DATA: u8 = 0x21;
+
+/// The command I/O port of the slave PIC
+const SLAVE_CMD: u8 = 0xA0;
+
+/// The data I/O port of the slave PIC
+const SLAVE_DATA: u8 = 0xA1;
+
+/// PIC initialization command
+const PIC_INIT: u8 = 0x11;
+
+/// PIC End of Interrupt command
+const PIC_EIO: u8 = 0x20;
+
+/// An individual PIC chip
+struct Pic {
+    /// The vector offset of the PIC chip
+    offset: u8,
+
+    /// The PIC chip's command I/O port
+    command: Port<u8>,
+    
+    /// The PIC chip's data I/O port
+    data: Port<u8>,
+}
+
+impl Pic {
+    /// Create an instance of a PIC chip by providing its 
+    /// offset and the command and data I/O port addresses
+    fn new(offset: u8, command: u8, data: u8) -> Self {
+        Self {
+            offset,
+            command: Port::new(command),
+            data: Port::new(data),
+        }
+    }
+}
