@@ -65,7 +65,8 @@
 //! Next, initialize the PICs (make sure interrupts are disabled):
 //!
 //! ```rust
-//! PICS.lock().initialize();
+//! unsafe { PICS.lock().initialize(); }
+//! # enable interrupts after initializing the PIC
 //! ```
 //!
 //! When you have finished handling an interrupt, call [`ChainedPics::notify_end_of_interrupt`]. Here is an example:
@@ -86,16 +87,16 @@
 use x86_64::instructions::port::Port;
 
 /// The command I/O port of the master PIC.
-const MASTER_CMD: u8 = 0x20;
+const MASTER_CMD: u16 = 0x20;
 
 /// The data I/O port of the master PIC.
-const MASTER_DATA: u8 = 0x21;
+const MASTER_DATA: u16 = 0x21;
 
 /// The command I/O port of the slave PIC.
-const SLAVE_CMD: u8 = 0xA0;
+const SLAVE_CMD: u16 = 0xA0;
 
 /// The data I/O port of the slave PIC.
-const SLAVE_DATA: u8 = 0xA1;
+const SLAVE_DATA: u16 = 0xA1;
 
 /// PIC initialization command.
 const PIC_INIT: u8 = 0x11;
@@ -121,7 +122,7 @@ struct Pic {
 impl Pic {
     /// Create an instance of a PIC chip by providing its
     /// offset and the command and data I/O port addresses.
-    fn new(offset: u8, command: u8, data: u8) -> Self {
+    const fn new(offset: u8, command: u16, data: u16) -> Self {
         Self {
             offset,
             command: Port::new(command),
@@ -199,7 +200,7 @@ impl ChainedPics {
         let mut wait = || wait_port.write(0);
 
         // Save the original interrupts masks.
-        let saved_masks = self.read_masks();
+        let saved_masks = self.read_interrupt_masks();
 
         // Send each PIC the initialization command. This tells the PICs that
         // a 3-byte initialization sequence will be sent to its data port.
@@ -227,7 +228,7 @@ impl ChainedPics {
         wait();
 
         // Restore the saved masks.
-        self.write_masks(saved_masks[0], saved_masks[1]);
+        self.write_interrupt_masks(saved_masks[0], saved_masks[1]);
     }
 
     /// Read the interrupt masks of both PICs.
@@ -274,7 +275,8 @@ impl ChainedPics {
 
     /// Restore the vector offsets to the defaults, which do not conflict with anything in real mode.
     #[doc(hidden)]
-    pub const fn restore(&mut self) {
-        todo!();
+    pub fn restore(&mut self) {
+        self.pics[0].offset = 0x00;
+        self.pics[1].offset = 0x08;
     }
 }
