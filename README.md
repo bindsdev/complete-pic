@@ -13,4 +13,3 @@ complete_pic = "0.1.0"
 ### Crate Features
 - `8259pic` - Enable interface for the legacy 8259 PIC (not on by default)
 - `apic` - Enable interface for the newer APIC (enabled by default; crate assumes you want to use the more modern variant)
-- `unstable` - Allow usage of unstable nightly features (enabled by default) 

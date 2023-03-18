@@ -13,17 +13,13 @@ categories = ["no_std"]
 exclude = ["./.github/*"]
 
 [dependencies]
-pic8259 = { version = "0.10.3", optional = true }
 x86_64 = { version = "0.14.10", default-features = false, features = ["instructions"] }
 
 [features]
-default = ["unstable", "apic"]
+default = ["apic"]
 
 # Enable interface for the legacy 8259 PIC (not on by default)
-8259pic = ["dep:pic8259"]
+8259pic = []
 
 # Enable interface for the newer APIC (enabled by default; crate assumes you want to use the more modern variant)
 apic = []
-
-# Allow usage of unstable nightly features (enabled by default) 
-unstable = []
