@@ -1,3 +1,5 @@
+//! 8269 PIC interface
+//!
 //! # What is the 8259 PIC?
 //! The 8259 PIC (or Programmable Interrupt Controller) is a crucial component of the x86 architecture.
 //! It led to the x86 architecture becoming interrupt-driven. Its purpose is to manage hardware interrupts
@@ -33,48 +35,128 @@
 //!
 //! # Public API
 //!
-//! This module is based of the design of the already existing [pic8259](https://github.com/rust-osdev/pic8259) crate.
+//! This module is based of the design of the already existing [pic8259](https://github.com/rust-osdev/pic8259) crate. The public functions are marked as `unsafe` because it is
+//! very easy to cause undefined behavior by passing incorrect values that misconfigure the 8259 PIC or using the 8259 PIC incorrectly.
+//!
+//! # Usage
+//!
+//! Before utilizing this module, it is recommended that you wrap the `ChainedPics` struct in a `Mutex` to get safe mutable access to it. This can be done by using the `spin` crate.
+//! Make sure to add the `spin` crate to your `Cargo.toml` under `[dependencies]`.
 
 use x86_64::instructions::port::Port;
 
-/// The command I/O port of the master PIC
+/// The command I/O port of the master PIC.
 const MASTER_CMD: u8 = 0x20;
 
-/// The data I/O port of the master PIC
+/// The data I/O port of the master PIC.
 const MASTER_DATA: u8 = 0x21;
 
-/// The command I/O port of the slave PIC
+/// The command I/O port of the slave PIC.
 const SLAVE_CMD: u8 = 0xA0;
 
-/// The data I/O port of the slave PIC
+/// The data I/O port of the slave PIC.
 const SLAVE_DATA: u8 = 0xA1;
 
-/// PIC initialization command
+/// PIC initialization command.
 const PIC_INIT: u8 = 0x11;
 
-/// PIC End of Interrupt command
+/// PIC End of Interrupt command.
 const PIC_EIO: u8 = 0x20;
 
-/// An individual PIC chip
+/// An individual PIC chip.
 struct Pic {
-    /// The vector offset of the PIC chip
+    /// The vector offset of the PIC chip.
     offset: u8,
 
-    /// The PIC chip's command I/O port
+    /// The PIC chip's command I/O port.
     command: Port<u8>,
-    
-    /// The PIC chip's data I/O port
+
+    /// The PIC chip's data I/O port.
     data: Port<u8>,
 }
 
 impl Pic {
-    /// Create an instance of a PIC chip by providing its 
-    /// offset and the command and data I/O port addresses
+    /// Create an instance of a PIC chip by providing its
+    /// offset and the command and data I/O port addresses.
     fn new(offset: u8, command: u8, data: u8) -> Self {
         Self {
             offset,
             command: Port::new(command),
             data: Port::new(data),
         }
+    }
+
+    /// Check if this PIC is in charge of handling the IRQ specified by the given ID
+    /// (each PIC handles 8 interrupts).
+    const fn handles_interrupt(&self, irq_id: u8) -> bool {
+        self.offset <= irq_id && irq_id < self.offset + 8
+    }
+
+    /// Signal that an IRQ has been handled and that the PIC is ready for more IRQs
+    unsafe fn end_of_interrupt(&mut self) {
+        self.command.write(PIC_EIO);
+    }
+
+    /// Read the interrupt mask of this PIC. When no command is issued, we can access the PIC's
+    /// interrupt mask via its data I/O port.
+    unsafe fn read_interrupt_mask(&mut self) -> u8 {
+        self.data.read()
+    }
+
+    /// Write to the interrupt mask of this PIC. When no command is issued, we can access the PIC's
+    /// interrupt mask via its data I/O port.
+    unsafe fn write_interrupt_mask(&mut self, mask: u8) {
+        self.data.write(mask);
+    }
+}
+
+/// The two 8259 PICs, chained together.
+pub struct ChainedPics {
+    pics: [Pic; 2],
+}
+
+impl ChainedPics {
+    /// Create an interface for the two 8259 PICs, specifying the desired interrupt offsets for both.
+    ///
+    /// # Interrupt Offset Note
+    ///
+    /// The default PIC configuration, which sends interrupt vector numbers in the range
+    /// of 0 to 15, is not usable in protected mode since the numbers in that range are
+    /// occupied by CPU exceptions in protected mode. If you return to real mode from
+    /// protected mode, you must restore the PICs to their default configurations. You can
+    /// do this using the [`ChainedPics::restore`] method.
+    pub const unsafe fn new(master_offset: u8, slave_offset: u8) -> Self {
+        Self {
+            pics: [
+                Pic::new(master_offset, MASTER_CMD, MASTER_DATA),
+                Pic::new(slave_offset, SLAVE_CMD, SLAVE_DATA),
+            ],
+        }
+    }
+
+    /// Initialize both of the PICs.
+    pub unsafe fn initialize(&mut self) {
+        // We need to add a delay between writes to our PICs, especially on
+        // older motherboards. But we don't necessarily have any kind of
+        // timers yet, because most of them require interrupts. Various
+        // older versions of Linux and other PC operating systems have
+        // worked around this by writing garbage data to port 0x80, which
+        // allegedly takes long enough to make everything work on most
+        // hardware.
+        let mut wait_port: Port<u8> = Port::new(0x80);
+        let mut wait = || wait_port.write(0);
+
+        // Send each PIC the initialization command.
+        self.pics[0].command.write(PIC_INIT);
+        wait();
+        self.pics[1].command.write(PIC_INIT);
+        wait();
+
+        // INCOMPLETE
+    }
+
+    /// Restore the vector offsets to the defaults, which do not conflict with anything in real mode.
+    pub const fn restore(&mut self) {
+        todo!();
     }
 }
