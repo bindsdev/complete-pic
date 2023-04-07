@@ -8,8 +8,8 @@ homepage = "https://github.com/akabinds/complete-pic"
 description = "A complete interface for the legacy 8259 PIC and the newer APIC."
 readme = "README.md"
 license = "MIT"
-keywords = ["no_std", "os", "osdev", "x86", "x86-64"]
-categories = ["no_std"]
+keywords = ["os", "osdev", "x86", "x86-64"]
+categories = ["no-std", "no-std::no-alloc"]
 exclude = ["./.github/*"]
 
 [dependencies]
