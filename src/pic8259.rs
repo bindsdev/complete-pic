@@ -1,4 +1,4 @@
-//! 8269 PIC interface
+//! 8259 PIC interface
 //!
 //! # What is the 8259 PIC?
 //! The 8259 PIC (or Programmable Interrupt Controller) is a crucial device in the x86 architecture.
