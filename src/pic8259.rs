@@ -16,7 +16,7 @@
 //!
 //! ## The 8259 PIC today
 //! The 8259 PIC is now a legacy device that has been replaced by the APIC (Advanced Programmable Interrupt Controller). The APIC is usable within multiprocessor systems.
-//! The APIC can do more sophisticated and complex things than the 8259 PIC. Read more about the APIC
+//! The APIC can do more sophisticated and complex things than the 8259 PIC.
 //!
 //! ## Where can I read more?
 //! The following links are useful to learning more about the 8259 PIC and interrupts:
