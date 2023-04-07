@@ -46,6 +46,7 @@ jobs:
           args: --all-features
       - uses: actions-rs/cargo@v1.0.1
         with:
-          command: doc  
+          command: doc
+          args: --no-deps --all-features  
         env:
           RUSTDOCFLAGS: -Dwarnings    
