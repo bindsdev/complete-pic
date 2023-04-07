@@ -1,6 +1,6 @@
 [package]
 name = "complete-pic"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["akabinds <bindsdev@gmail.com>"]
 repository = "https://github.com/akabinds/complete-pic"
@@ -8,7 +8,7 @@ homepage = "https://github.com/akabinds/complete-pic"
 description = "A complete interface for the legacy 8259 PIC and the newer APIC."
 readme = "README.md"
 license = "MIT"
-keywords = ["os", "osdev", "x86", "x86-64"]
+keywords = ["no_std", "os", "osdev", "x86", "x86-64"]
 categories = ["no-std", "no-std::no-alloc"]
 exclude = ["./.github/*"]
 
@@ -23,3 +23,6 @@ default = ["apic"]
 
 # Enable interface for the newer APIC (enabled by default; crate assumes you want to use the more modern variant)
 apic = []
+
+[package.metadata.docs.rs]
+all-features = true

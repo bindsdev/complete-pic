@@ -1,4 +1,11 @@
 # complete-pic
+
+![](https://img.shields.io/github/actions/workflow/status/bindsdev/complete-pic/ci.yml?style=flat-square)
+![](https://img.shields.io/crates/v/complete-pic?style=flat-square)
+![](https://img.shields.io/crates/d/complete-pic?style=flat-square)
+![](https://img.shields.io/crates/l/complete-pic?style=flat-square)
+![](https://img.shields.io/docsrs/complete-pic)
+
 A complete interface for both the legacy [8259 PIC](https://wiki.osdev.org/PIC) and the newer
 [APIC](https://wiki.osdev.org/APIC). More specific documentation can be found by reading the documentation of the
 modules designated for the 8259 PIC and APIC or by visiting the OSDev wiki's pages on them, which are hyperlinked above. 
