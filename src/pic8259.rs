@@ -60,16 +60,13 @@
 //! # enable interrupts after initializing the PIC
 //! ```
 //!
-//! When you have finished handling an interrupt, call [`ChainedPics::notify_end_of_interrupt`]. Here is an example:
+//! When you have finished handling an interrupt, call [`ChainedPics::notify_end_of_interrupt`]. This example handles the Intel Programmable Interval Timer (PIT), which uses the first IRQ index:
 //!
 //! ```rust
 //! #![feature(abi_x86_interrupt)]
 //!
 //! extern "x86-interrupt" fn timer_interrupt_handler(...) {
-//!    # code
-//!
 //!    unsafe {
-//!        # The Intel Programmable Interval Time (PIT) uses the first IRQ index.
 //!        PICS.lock().notify_end_of_interrupt(PIC1_OFFSET);
 //!    }  
 //! }
