@@ -36,7 +36,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! complete_pic = { version = "0.1.0", default-features = false, features = ["8259pic"] }
+//! complete_pic = { version = "0.1.1", default-features = false, features = ["8259pic"] }
 //! spin = "0.9.6"
 //! ```
 //!
