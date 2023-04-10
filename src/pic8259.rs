@@ -36,8 +36,8 @@
 //!
 //! ```toml
 //! [dependencies]
-//! complete_pic = { version = "0.1.1", default-features = false, features = ["8259pic"] }
-//! spin = "0.9.6"
+//! complete_pic = { version = "0.2.0", default-features = false, features = ["8259pic"] }
+//! spin = "0.9.8"
 //! ```
 //!
 //! Next, declare a `spin::Mutex<ChainedPics>` in a `static` variable:
@@ -74,8 +74,9 @@
 //!
 //! # Note
 //!
-//! Some bootloaders might mask all the IRQs from the 8259 (legacy) PIC, like Limine. Make sure you check the bootloader's documentation before
-//! you become confused due to this module not functioning as expected.
+//! Some boot protocols might mask all the IRQs from the legacy 8259 PIC, like Limine. Consult the documentation of the boot protocol you are using,
+//! so you don't encounter unexpected, confusing behavior. You can always change the interrupt masks of both PICs at the same time
+//! using [`ChainedPics::write_interrupt_masks`](ChainedPics::write_interrupt_masks).
 
 use x86_64::instructions::port::Port;
 
@@ -224,12 +225,32 @@ impl ChainedPics {
         self.write_interrupt_masks(saved_masks[0], saved_masks[1]);
     }
 
+    /// Read the interrupt mask of the master PIC.
+    pub unsafe fn read_master_interrupt_mask(&mut self) -> u8 {
+        self.pics[0].read_interrupt_mask()
+    }
+
+    /// Read the interrupt mask of the slave PIC.
+    pub unsafe fn read_slave_interrupt_mask(&mut self) -> u8 {
+        self.pics[1].read_interrupt_mask()
+    }
+
     /// Read the interrupt masks of both PICs.
     pub unsafe fn read_interrupt_masks(&mut self) -> [u8; 2] {
         [
             self.pics[0].read_interrupt_mask(),
             self.pics[1].read_interrupt_mask(),
         ]
+    }
+
+    /// Write to the interrupt mask of the master PIC.
+    pub unsafe fn write_master_interrupt_mask(&mut self, mask: u8) {
+        self.pics[0].write_interrupt_mask(mask);
+    }
+
+    /// Write to the interrupt mask of the slave PIC.
+    pub unsafe fn write_slave_interrupt_mask(&mut self, mask: u8) {
+        self.pics[0].write_interrupt_mask(mask);
     }
 
     /// Write to the interrupt masks of both PICs.
