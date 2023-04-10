@@ -20,10 +20,6 @@ complete_pic = "0.2.0"
 - `8259pic` - Enable interface for the legacy 8259 PIC (not on by default)
 - `apic` - Enable interface for the newer APIC (enabled by default; crate assumes you want to use the more modern variant)
 
-## MSRV
-
-The minimum supported Rust version (MSRV) for this crate is 1.59.0.
-
 ## Changelog
 
 View the [changelog](/CHANGELOG.md) to see what changed across crate versions.
