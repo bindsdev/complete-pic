@@ -5,7 +5,7 @@
 //! To use this crate, add it to your `Cargo.toml` file:
 //! ```toml
 //! [dependencies]
-//! complete_pic = "0.2.0"
+//! complete_pic = "0.3.0"
 //! ```   
 //!
 //! ## Crate Features

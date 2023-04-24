@@ -36,7 +36,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! complete_pic = { version = "0.2.0", default-features = false, features = ["8259pic"] }
+//! complete_pic = { version = "0.3.0", default-features = false, features = ["8259pic"] }
 //! spin = "0.9.8"
 //! ```
 //!
@@ -259,7 +259,12 @@ impl ChainedPics {
         self.pics[1].write_interrupt_mask(slave_mask);
     }
 
-    /// Disable both PICs by masking all interrupts.
+    /// Convenience function for unmasking both PICs.
+    pub unsafe fn unmask(&mut self) {
+        self.write_interrupt_masks(u8::MIN, u8::MIN);
+    }
+
+    /// Convenience function for disabling both PICs by masking all interrupts.
     pub unsafe fn disable(&mut self) {
         self.write_interrupt_masks(u8::MAX, u8::MAX);
     }
