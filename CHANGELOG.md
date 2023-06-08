@@ -15,3 +15,7 @@
 ## v0.3.0
 
 - Add convenience `unmask` method on `ChainedPics` for unmasking both PICs.
+
+## v0.3.1
+
+- Add `hardware-support` category slug to the `categories` key in `Cargo.toml`
