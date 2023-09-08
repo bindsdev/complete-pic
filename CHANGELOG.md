@@ -19,3 +19,7 @@
 ## v0.3.1
 
 - Add `hardware-support` category slug to the `categories` key in `Cargo.toml`
+
+## v1.0.0
+
+- Remove `default` features. Enabling both the `pic8259` and `apic` features must now be explicit.

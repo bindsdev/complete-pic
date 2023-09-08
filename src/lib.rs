@@ -5,12 +5,12 @@
 //! To use this crate, add it to your `Cargo.toml` file:
 //! ```toml
 //! [dependencies]
-//! complete_pic = "0.3.0"
+//! complete_pic = { version = "1.0.0", features = [...] }
 //! ```   
 //!
 //! ## Crate Features
-//! - `8259pic` - Enable interface for the legacy 8259 PIC (not on by default)
-//! - `apic` - Enable interface for the newer APIC (enabled by default; crate assumes you want to use the more modern variant)
+//! - `8259pic` - Enable interface for the legacy 8259 PIC
+//! - `apic` - Enable interface for the newer APIC
 
 #![no_std]
 
@@ -19,3 +19,6 @@ compile_error!("This crate will only work on x86 platforms");
 
 #[cfg(feature = "8259pic")]
 pub mod pic8259;
+
+#[cfg(feature = "apic")]
+pub mod apic;

@@ -36,8 +36,8 @@
 //!
 //! ```toml
 //! [dependencies]
-//! complete_pic = { version = "0.3.0", default-features = false, features = ["8259pic"] }
-//! spin = "0.9.8"
+//! complete_pic = { version = "1.0.0", features = ["8259pic"] }
+//! spin = { version = "0.9.8", default-features = false, features = ["spin_mutex"] }
 //! ```
 //!
 //! Next, declare a `spin::Mutex<ChainedPics>` in a `static` variable:
@@ -75,8 +75,8 @@
 //! # Note
 //!
 //! Some boot protocols might mask all the IRQs from the legacy 8259 PIC, like Limine. Consult the documentation of the boot protocol you are using,
-//! so you don't encounter unexpected, confusing behavior. You can always change the interrupt masks of both PICs at the same time
-//! using [`ChainedPics::write_interrupt_masks`](ChainedPics::write_interrupt_masks).
+//! so you don't encounter unexpected, confusing behavior. The [`ChainedPics`](ChainedPics) API provides a convenience function that unmasks both PICs ([`ChainedPic::unmask`](ChainedPics::unmask)).
+//! You can always change the interrupt masks of both PICs at the same time using [`ChainedPics::write_interrupt_masks`](ChainedPics::write_interrupt_masks).
 
 use x86_64::instructions::port::Port;
 
@@ -290,12 +290,5 @@ impl ChainedPics {
 
             self.pics[0].end_of_interrupt();
         }
-    }
-
-    /// Restore the vector offsets to the defaults, which do not conflict with anything in real mode.
-    #[doc(hidden)]
-    pub fn restore(&mut self) {
-        self.pics[0].offset = 0x00;
-        self.pics[1].offset = 0x08;
     }
 }
