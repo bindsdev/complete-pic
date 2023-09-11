@@ -36,3 +36,6 @@
 //! 1. Parse the ACPI (Advanced Configuration and Power Interface) tables, specifically the MADT (Multiple APIC Description Table). This can be done using
 //!    the [acpi](https://docs.rs/acpi/latest/acpi/index.html) crate.
 //! 2. Check if the legacy 8259 PICs are present. If so, you must mask all interrupts and remap the IRQs
+
+pub mod ioapic;
+pub mod lapic;

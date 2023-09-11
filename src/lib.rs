@@ -13,6 +13,7 @@
 //! - `apic` - Enable interface for the newer APIC
 
 #![no_std]
+#![deny(unsafe_op_in_unsafe_fn)]
 
 #[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
 compile_error!("This crate will only work on x86 platforms");
