@@ -13,7 +13,7 @@ categories = ["no-std", "no-std::no-alloc", "hardware-support"]
 exclude = ["./.github/*"]
 
 [dependencies]
-x86_64 = { version = "0.14.10", default-features = false, features = ["instructions"] }
+x86_64 = { version = "0.15.0", default-features = false, features = ["instructions"] }
 
 [features]
 default = ["apic"]
